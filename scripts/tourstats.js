@@ -16,20 +16,21 @@ function updateTourStats(tier, time, winner, num, noPoints, purgeTime) {
         // Fourth index: points for 32-63 players,
         // Fifth index: points for 64+ players
         var pointsDistributions = {
-            "CC 1v1": [0, 0, 0, 0, 1],
-            "Wifi CC 1v1": [0, 0, 0, 0, 1],
-            "Challenge Cup": [0, 0, 0, 1, 2],
-            "Inverted Challenge Cup": [0, 0, 0, 1, 2],
-            "Hackmons CC 1v1": [0, 0, 0, 0, 1],
-            "Hackmons Wifi CC 1v1": [0, 0, 0, 0, 1],
-            "Hackmons Challenge Cup": [0, 0, 0, 1, 2],
-            "Hackmons Inverted CC": [0, 0, 0, 1, 2],
-            "ORAS Balanced Hackmons" : [0, 0 ,0 ,1 ,2],
-            "ORAS Hackmons" : [0, 0, 0, 1, 2],
-            "ORAS 1v1": [0, 0, 0, 0, 1],
-            "Flash Clash": [0, 0, 0, 0, 1],
-            "Metronome": [0, 0, 0, 0, 0],
-            "default": [0, 1, 2, 4, 6],
+            // tier 1
+            "default": [2, 4, 6, 8, 10],
+            // tier 2
+            "ORAS 1v1": [1, 2, 2, 3, 4],
+            "Flash Clash": [1, 2, 2, 3, 4],
+            "Challenge Cup" [1, 2, 2, 3, 4],
+            "Inverted Challenge Cup" [1, 2, 2, 3, 4],
+            "Hackmons Challenge Cup" [1, 2, 2, 3, 4],
+            "Wifi CC 1v1" [1, 2, 2, 3, 4],
+            "Hackmons Wifi CC 1v1" [1, 2, 2, 3, 4],
+            "Hackmons Inverted CC" [1, 2, 2, 3, 4],
+            // tier 3
+            "CC 1v1": [1, 1, 2, 2, 3],
+            "Hackmons CC 1v1": [1, 1, 2, 2, 3],
+            "Metronome": [1, 1, 2, 2, 3]
         }
         var d = pointsDistributions[tier in pointsDistributions ? tier : "default"];
         if (num < 8) return d[0];
