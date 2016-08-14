@@ -339,7 +339,11 @@ AutoTeams.giveTeam = function(player, slot, tier) {
 };
 
 AutoTeams.isAutoTeamsAuth = function(player) {
-    return require("tours.js").isTourOwner(player) || (sys.auth(player) >= 2 && sys.dbRegistered(sys.name(player))) || script.autoteamsAuth.has(sys.name(player).toLowerCase());
+    return require("tours.js").isTourOwner(player) || (sys.auth(player) >= 2 && sys.dbRegistered(sys.name(player)));
+};
+
+AutoTeams.isAutoTeamsReviewer = function(player) {
+    return this.isAutoTeamsAuth(player) || script.autoteamsAuth.has(sys.name(player).toLowerCase());
 };
 
 AutoTeams.changeAuth = function(name, remove) {
@@ -369,6 +373,7 @@ AutoTeams.changeAuth = function(name, remove) {
 };
 
 AutoTeams.handleCommand = function(player, message, channel) {
+    
     if (!this.isAutoTeamsAuth(player)) {
         return false;
     }
@@ -382,8 +387,7 @@ AutoTeams.handleCommand = function(player, message, channel) {
         commandData = "";
     }
     commandData = commandData.split(":");
-    var team;
-    var tier;
+    var team, tier;
     try {
         if (command === "addauth" || command === "removeauth") {
             teamsbot.sendMessage(player, this.changeAuth(commandData, command === "removeauth"), channel);   
@@ -461,29 +465,41 @@ AutoTeams.handleCommand = function(player, message, channel) {
     return true;
 };
 
-AutoTeams.help = [
-    "",
-    "*** AutoTeams Commands ***",
+AutoTeams.authHelp = [
+    "*** AutoTeams Auth Commands ***",
     "/[add/remove]auth [user]: Adds/removes a user from autoteams auth.",
-    "/autoteamsauth: Lists users who may add autoteams.",
-    "/addautoteam [team name]:[tier]: Adds an autoteam.",
-    "/removeautoteam [team name]:[tier]: Removes an autoteam.",
     "/addautotier [tier]: Adds a tier for autoteams.",
-    "/removeautotier [tier]: Removes a tier for autoteams (keeps data files intact).",
+    "/removeautotier [tier]: Removes a tier for autoteams (keeps data files intact)."
+];
+
+AutoTeams.reviewHelp = [
+    "*** AutoTeams Reviewer Commands ***",
     "/autotiers: Lists tiers with autoteams.",
     "/autoteams [tier]: Lists autoteams for a tier. Includes all tiers when no tier is specified.",
+    "/addautoteam [team name]:[tier]: Adds an autoteam.",
+    "/removeautoteam [team name]:[tier]: Removes an autoteam.",
     "/viewautoteam [team name]:[tier]: Displays an autoteam as an importable.",
-    "/setautoteam [tier]: Sets a random autoteam to your first team slot (debug use)."
+    "/setautoteam [tier]: Sets a random autoteam to your first team slot (debug use).",
+    "/autoteamsauth: Lists users who may add autoteams."
 ];
 
 // AutoTeams["help-string"] = ["autoteams: To know the autoteams commands"];
 
 AutoTeams.onHelp = function(player, topic, channel) {
-    if (topic !== "autoteams" || !this.isAutoTeamsAuth(player)) {
+    var help = [""];
+    if (topic !== "autoteams") {
         return false;
     }
-    for (var i = 0; i < this.help.length; i++) {
-        sys.sendMessage(player, this.help[i], channel);
+    if (this.isAutoTeamsReviewer(player)) {
+        help.concat(this.reviewHelp);
+    } else {
+        return false;
+    }
+    if (this.isAutoTeamsAuth(player)) {
+        help.concat(this.authHelp);
+    }
+    for (var i = 0; i < help.length; i++) {
+        sys.sendMessage(player, help, channel);
     }
     return true;
 };
