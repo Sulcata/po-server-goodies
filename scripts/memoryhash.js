@@ -33,6 +33,11 @@ function MemoryHash(filename)
     }
 }
 
+MemoryHash.prototype.has = function(key)
+{
+    return this.hash.hasOwnProperty(key);
+}
+
 MemoryHash.prototype.add = function(key, value)
 {
     this.hash[key] = value;
